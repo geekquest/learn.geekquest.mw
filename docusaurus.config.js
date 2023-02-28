@@ -14,7 +14,8 @@ const config = {
   url: 'https://learn.geekquest.mw',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/learn.geekquest.mw/',
+  // baseUrl: '/learn.geekquest.mw/',
+  baseUrl: '/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
