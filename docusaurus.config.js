@@ -7,7 +7,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'GeekQuest Learn',
-  tagline: 'Lessons from GeekQuest Members',
+  tagline: 'Sharing knowledge from Malawi to the world.',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
@@ -77,11 +77,21 @@ const config = {
             position: 'left',
             label: 'Tutorials',
           },
-          {to: '/docs/videos/featured', label: 'Videos', position: 'left'},
+          // {
+          //   type: 'doc',
+          //   docId: 'intro',
+          //   position: 'left',
+          //   label: 'Courses',
+          // },
+          {
+            to: '/docs/videos/featured', 
+            label: 'Videos', 
+            position: 'left'
+          },
           // {to: '/blog', label: 'Blog', position: 'left'},
           {
             href: 'https://github.com/geekquest/learn.geekquest.mw',
-            label: 'GitHub',
+            label: 'Contribute on GitHub',
             position: 'right',
           },
         ],

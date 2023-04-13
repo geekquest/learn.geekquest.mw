@@ -4,42 +4,41 @@ import styles from './styles.module.css';
 
 const FeatureList = [
   {
-    title: 'Easy to Use',
-    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
+    title: 'Aimed at Growing Skills',
+    Uri: require('@site/static/img/3946714.jpg').default,
+    alt: 'Image by <a href="https://www.freepik.com/free-vector/illustrated-flat-dance-fitness-home_12811092.htm#query=training%20gym&position=48&from_view=search&track=ais">Freepik</a>',
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+        Our goal with GeekQuest Learn is to help bridge the skills gap between learning and practicing developers.
       </>
     ),
   },
   {
-    title: 'Focus on What Matters',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
+    title: 'Unearthing Malawian Talent',
+    Uri: require('@site/static/img/6770986.jpg').default,
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        Malawi has a lot of talented folks who have ideas, opinions and cool projects. GeekQuest will help unearth these gems so they can shine.
       </>
     ),
   },
   {
-    title: 'Powered by React',
-    Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
+    title: 'Powered by the Community',
+    Uri: require('@site/static/img/high-five.png').default,
+    alt: '<a href="https://www.freepik.com/free-vector/programmer-concept-illustration_8611162.htm#query=computer&position=28&from_view=search&track=sph">Image by storyset</a> on Freepik',
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+       All content on this site is contributed by passionate community of contributors who strive to learn from and teach their peers.
       </>
     ),
   },
 ];
 
-function Feature({Svg, title, description}) {
+function Feature({Uri, title, description}) {
   return (
     <div className={clsx('col col--4')}>
       <div className="text--center">
-        <Svg className={styles.featureSvg} role="img" />
+        <img className={styles.featureSvg} role="img" src={Uri} />
       </div>
       <div className="text--center padding-horiz--md">
         <h3>{title}</h3>
