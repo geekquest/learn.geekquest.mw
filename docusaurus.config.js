@@ -84,7 +84,7 @@ const config = {
           //   label: 'Courses',
           // },
           {
-            to: '/docs/videos/featured', 
+            to: '/videos', 
             label: 'Videos', 
             position: 'left'
           },
