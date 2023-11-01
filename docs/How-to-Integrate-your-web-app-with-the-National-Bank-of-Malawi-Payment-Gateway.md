@@ -1,28 +1,29 @@
-In this article, I will demonstrate how you can integrate your e-commence site with the National Bank of Malawi (NBM) payment gateway using the hosted checkout model to respond to either of the aforementioned use cases. Primarily, the hosted checkout allows a merchant/business to collect payments from a payer (a customer) through an interaction hosted and displayed by the payment Gateway.
+# How to Integrate your web app with the National Bank of Malawi Payment Gateway.
+
+In this article, I will demonstrate how you can integrate your website with the __National Bank of Malawi (NBM) payment gateway__ using the hosted checkout model. The hosted checkout allows a business to collect payments from a customer through an interaction hosted and displayed by the payment Gateway.
 
 Below is an illustration of the information flow of the hosted checkout session.
   
 
-  Inset image
+ ![hosted checkout](hosted.png)
 
+1. The payer initiates the payment process for goods and services at your shop site.
 
-1.The payer initiates the payment process for goods and services at your shop site.
+1. The payer enters the required information, and clicks "Pay".
 
-2.The payer enters the required information, and clicks "Pay".
+1. If the payment is successful, the payer can obtain the payment details from one of these sources: the Payment Gateway-hosted receipt or your shop site.
 
-3.If the payment is successful, the payer can obtain the payment details from one of these sources: the Payment Gateway-hosted receipt or your shop site.
+For simplicity, we will simulate a simple case where a payer wants to pay a merchant. For this, We will need two pages,. The first page will be an interface to allow a payer to enter the amount to be paid and the currency for the payment. The second page will handle the actual request of the checkout session upon which the payer will be presented with the payment interface from the gateway.
 
-For simplicity, I will simulate a simple case where a user/payer wants to pay a merchant. We will need two pages for this purpose, an interface to allow a user to enter the amount to be paid and to select a currency for the payment. The second page will handle the actual request of the checkout session through the gateway and then the payer will be presented with the payment interface from the gateway.
+## 1. Create a folder and the files for the project.
 
-1. Create a folder and the files for the project.#
+In your web server, create a directory and name it __NBAPI__. We will need two files for this use case. We will need an __index.php__ file that will provide an interface to allow a user to enter the desired amount they want to pay.
 
-In your web server, create a directory and name it Ecommerce. We will need two files for this use case. We will need a page index.php that will provide an interface to allow a user to enter then desired amount they want to pay a merchant.
+In the second file __requestSession.php__, we will request the checkout session and make the actual payment. In the __NBAPI__ directory and create the two files namely index.php and requestSession.php.
 
-In the second file requestSession.php, we will need to request the checkout session and make the payment to the merchant through the payment gateway. An also allow the user to confirm their intended donation or cancel the transaction. Open the Ecommerce directory and create the two files namely index.php and requestSession.php.
+## 2. Create a form for making a payment.
 
-**2. Create a form for making a payment. **#
-
-Open Ecommerce/index.php and create a form with two input fields. An Input field of the type number and a select field of the type text, these will be used for inputing the amount and selecting the desired currency type respectively. The action of the form should be requestSession.php and the method should be POST.
+In __index.php__, create a form with two input fields. An input field of the type number for inputing the payable amount and a select field for choosing the desired currency. Below is the code.
 
 ```php
 <html lang="en">
@@ -76,6 +77,7 @@ Open Ecommerce/index.php and create a form with two input fields. An Input field
 </html>
 ```
 We need to retrieve the result indicator and success indicators. The result indicator will be returned by the gateway through the return URL which we will specify as we will be requesting the checkout session. Upon requesting the checkout session, the gateway will return the success indicator which we will store through a session variable. (Note that this can be stored in your e-commerce system database.)
+
 ```php
 <?php
 session_start();
@@ -94,9 +96,9 @@ A match of the successIndicator and the resultIndicator indicates that the payme
 ?>
 
 ```
-3. Request the hosted checkout interaction
+## 3. Request the hosted checkout interaction
 
-Ensure that your merchant profile is enabled for the Hosted Checkout service.We need to request a checkout session using the Create Checkout Session operation. The request should include the payment and interaction data, as well as completion instructions. Open Ecommerce/requestSession.php. We need to define and initiate the payment and interaction data.
+We need to request a checkout session using the Create Checkout Session operation. The request should include the payment and interaction data, as well as completion instructions. In __requestSession.php__ We need to define and initiate the payment and interaction data.
 
 ```php
 <?php
@@ -109,31 +111,29 @@ $orderId   = uniqid();
 $apiUsername ="apiUsername";
 $merchant ="MerchatId";
 ```
-Define the interaction.returnUrl.
+## 4. Define the interaction.returnUrl.
 
-The gateway will need the returnUrl to redirect the payer to the shop site. Possibly, when redirected the payer can presented with the payment status or any desired message including a receipt. Hence we must provide the interaction.returnUrl in the Create Checkout Session operation.
+The gateway will need the returnUrl to redirect the payer after the checkout session. Possibly, when redirected the payer can be  presented with the payment status or any desired message including a receipt. Hence we must provide the interaction.returnUrl in the Create Checkout Session operation.
 
 ```php
 $returnUrl = "https://returnurl.com";
 ```
-Generate and define the API Password
+## 5. Generate and define the API Password
 
-You should generate the API password in the Merchant Administration Portal. As earlier indicated, the merchant profile must be enabled for API, Batch, and "Use Password Authentication" privileges. To access Merchant Administration, we need to login to the merchant portal. Administrator login credentials will be provided to you by NBM when you are successfully boarded onto the gateway. As an administrator, you should create a new operator with permissions to generate the API password.
-
-This is the API password you will use to authenticate API requests made from your web server to the gateway.
+You should generate the API password in the Merchant Administration Portal. Administrator login credentials will be provided to you by NBM when you are successfully on boarded to the gateway. As an administrator, you should create a new operator with permissions to generate the API password.
 
 Then in the code define and assign the apiPassword as below.
 
 ```php
 $apiPassword ="yourMerchantPortalGeneratedApiPassword";
 ```
-Define the base url for requesting the checkout session.
+## 6.  Define the base url for requesting the checkout session.
 
 ```php
 $baseUrl =  "https://nbm.gateway.mastercard.com/api/nvp/version/49";
 
 ```
-Then we need to Initiate a curl with the Create Checkout Session operation. The request should include the payment and the interaction data, as well as the completion instructions. For this case, the needed data has been defined above.
+Then we need to Initiate a curl with the Create Checkout Session operation. The request should include the payment and the interaction data, as well as the completion instructions. we have already defined the needed parameters as above.
 
 ```php
 $ch = curl_init();
@@ -152,7 +152,7 @@ if(curl_errno($ch)){
 curl_close($ch);
 ```
 
-Extract the session.id and the success indicator from the curl result.
+## 7. Extract the session.id and the success indicator from the curl result.
 
 We need to extract the session id from the curl result. A successful response to this operation will contain the session.id and the success Indicator parameters.
 
@@ -165,7 +165,7 @@ You may be wondering why the success Indicator.
 
 The gateway sends the result of the payment in a resultIndicator parameter, which is appended to the return url (interaction.returnUrl) used to return the payer to your shop site. We can determine the success of the payment by comparing the resultIndicator parameter to the successIndicator parameter returned in the Create Checkout Session response.
 
-A match of the successIndicator and the resultIndicator indicates that the payment has been successful. Depending on you system use case, you can save the value returned in the successIndicator parameter on your shop system to verify the success or failure of the payment. For this task I will use sessions just to demonstrate the point as explained.
+A match of the successIndicator and the resultIndicator indicates that the payment has been successful. Depending on you system use case, you can save the value returned in the successIndicator parameter on your shop system to verify the success or failure of the payment. We will use sessions just to demonstrate the point as explained.
 
 ```php
 $_SESSION["successIndicator"] = $successIndicator;
@@ -221,13 +221,14 @@ A button for starting the payment process.
 	</div>
 </main>
 ```
+
 We need to reference the checkout.js file from the gateway servers. This will place the Checkout object into global scope. In this case we will use version 49 of the checkout.
 
 ```php
  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> 
  <script src="https://nbm.gateway.mastercard.com/checkout/version/49/checkout.js" data-error="errorCallback" data-cancel="cancelCallback"></script>
 ```
-Holla!! We need some JavaScript to finalize the process. we need a call to the Checkout.configure() function and then pass in a JSON object that includes the returned session.id and other payment request parameters to pass in the necessary data for the payment.
+We need some JavaScript to finalize the process. we need a call to the Checkout.configure() function and then pass in a JSON object that includes the returned session.id and other payment request parameters to pass in the necessary data for the payment.
 
 ```php
         <script type="text/javascript">
