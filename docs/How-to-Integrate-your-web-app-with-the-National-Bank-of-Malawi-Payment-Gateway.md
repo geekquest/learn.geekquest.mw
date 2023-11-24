@@ -1,5 +1,9 @@
 # How to Integrate your web app with the National Bank of Malawi Payment Gateway.
 
+#### Date : 2023-11-24
+
+Author : [Moses Msukwa](https://github.com/mozesi)
+
 In this article, I will demonstrate how you can integrate your website with the __National Bank of Malawi (NBM) payment gateway__ using the hosted checkout model. The hosted checkout allows a business to collect payments from a customer through an interaction hosted and displayed by the payment Gateway.
 
 Below is an illustration of the information flow of the hosted checkout session.
@@ -263,3 +267,4 @@ We need some JavaScript to finalize the process. we need a call to the Checkout.
  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
 </html>
 ```
+Get access to the API from [National Bank of Malawi ](https://www.natbank.co.mw/) and  more API documentation [here](https://test-nbm.mtf.gateway.mastercard.com/api/documentation/integrationGuidelines/index.html?locale=en_US).
