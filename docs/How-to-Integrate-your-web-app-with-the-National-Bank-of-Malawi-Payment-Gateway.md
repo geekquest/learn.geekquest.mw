@@ -95,16 +95,19 @@ A match of the __$successIndicator__ and the __$resultIndicator__ indicates that
 
 ```php
 <?php
-       if(isset($resultIndicator)& isset($successIndicator)){
-                              if($resultIndicator == $successIndicator){
-                                  echo "The payment was succesfull";           
-          }    
+       if(isset($resultIndicator)& isset($successIndicator))
+       {
+          if($resultIndicator == $successIndicator){
+              echo "The payment was succesfull";           
+      }    
 ?>
 
 ```
-## 4. Request the hosted checkout interaction
+## Requesting the hosted checkout interaction
 
-We need to request a checkout session using the Create Checkout Session operation. The request should include the payment and interaction data, as well as completion instructions. In __requestSession.php__ We need to define and initiate the payment and interaction data.
+In __requestSession.php__ we need to request the checkout session using the Create Checkout Session operation. The request should include the payment, interaction data and the completion instructions.
+
+## 4. Define and initiate the payment and interaction data.
 
 ```php
 <?php
@@ -139,7 +142,7 @@ You will be provided with the base url for the test environment for testing purp
 $baseUrl =  "https://nbm.gateway.mastercard.com/api/nvp/version/49";
 
 ```
-Then we need to Initiate a curl with the Create Checkout Session operation. The request should include the payment and the interaction data, as well as the completion instructions. we have already defined the needed parameters from __step 4__.
+Then we need to Initiate a curl with the Create Checkout Session operation. As ealier indicated, this request should include the payment and the interaction data, plus the completion instructions. we have already defined the needed parameters from __step 4__.
 
 ```php
 $ch = curl_init();
@@ -170,9 +173,9 @@ $successIndicator = explode("=",explode("&",$result)[5])[1];
 
 You may be wondering why the success Indicator.
 
-The gateway sends the result of the payment in a __resultIndicator__ parameter, via the return url (interaction.returnUrl) used to return the payer to your desired page. There, you can determine the success of the payment by comparing the __resultIndicator__ parameter to the successIndicator parameter returned in the Create Checkout Session response.
+The gateway sends the result of the payment in a __resultIndicator__ parameter, via the return url (interaction.returnUrl) used to return the payer to your desired page. You can determine the success of the payment by comparing the values of __resultIndicator__ and the __successIndicator__.
 
-A match of the successIndicator and the resultIndicator shows that the payment was successful. Depending on you system use case, you can then save the value returned in the successIndicator parameter on your system to verify the success or failure of the payment. 
+A match of the __successIndicator__ and the __resultIndicator__ shows that the payment was successful. Depending on you system use case, you can then save the value returned in the successIndicator parameter on your system to verify the success or failure of the payment. 
 
 Here We will use sessions just to demonstrate the point as explained.
 
@@ -229,7 +232,7 @@ Include the below code for the page structure and the payment request form.
 </main>
 ```
 
-Wethen need to reference the __checkout.js__ file from the gateway servers. This will place the Checkout object into global scope. In this case we will use __version 49__ of the checkout.
+We then need to reference the __checkout.js__ file from the gateway servers. This will place the Checkout object into global scope. In this case we will use __version 49__ of the checkout.
 
 ```php
  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> 
