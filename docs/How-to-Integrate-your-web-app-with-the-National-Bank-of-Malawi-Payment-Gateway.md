@@ -17,13 +17,13 @@ Below is an illustration of the information flow of the hosted checkout session.
 
 1. If the payment is successful, the payer can obtain the payment details from one of these sources: the Payment Gateway-hosted receipt or your shop site.
 
-For simplicity, we will simulate a simple case where a payer wants to pay a merchant. For this, We will need two pages,. The first page will be an interface to allow a payer to enter the amount to be paid and the currency for the payment. The second page will handle the actual request of the checkout session upon which the payer will be presented with the payment interface from the gateway.
+For simplicity, we will simulate a simple case where a payer wants to pay a merchant. For this, We will need two pages. The first page will be an interface to allow a payer to enter the amount to be paid and the currency for the payment. The second page will handle the actual request of the checkout session upon which the payer will be presented with the payment interface from the gateway.
 
 ## 1. Create a folder and the files for the project.
 
 In your web server, create a directory and name it __NBAPI__. We will need two files for this use case. We will need an __index.php__ file that will provide an interface to allow a user to enter the desired amount they want to pay.
 
-In the second file __requestSession.php__, we will request the checkout session and make the actual payment. In the __NBAPI__ directory and create the two files namely index.php and requestSession.php.
+In the second file __requestSession.php__, we will request the checkout session and make the actual payment. In the __NBAPI__ directory, create the two files namely __index.php__ and __requestSession.php__.
 
 ## 2. Create a form for making a payment.
 
@@ -80,7 +80,9 @@ In __index.php__, create a form with two input fields. An input field of the typ
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
 </html>
 ```
-We need to retrieve the result indicator and success indicators. The result indicator will be returned by the gateway through the return URL which we will specify as we will be requesting the checkout session. Upon requesting the checkout session, the gateway will return the success indicator which we will store through a session variable. (Note that this can be stored in your e-commerce system database.)
+## 3. The result and success indicators
+
+We need to retrieve the result indicator and success indicators. The result indicator will automatically be returned by the gateway via the __return URL__ which we will define in __step 5__. Upon requesting the checkout session, the gateway will return the success indicator which we will store through a session variable. (Note that this can be stored in your system database.)
 
 ```php
 <?php
@@ -89,7 +91,7 @@ $resultIndicator  = $_GET["resultIndicator"];
 $successIndicator = $_SESSION["successIndicator"];
 ?>
 ```
-A match of the successIndicator and the resultIndicator indicates that the payment has been successful.
+A match of the __$successIndicator__ and the __$resultIndicator__ indicates that the payment was successful.
 
 ```php
 <?php
@@ -100,7 +102,7 @@ A match of the successIndicator and the resultIndicator indicates that the payme
 ?>
 
 ```
-## 3. Request the hosted checkout interaction
+## 4. Request the hosted checkout interaction
 
 We need to request a checkout session using the Create Checkout Session operation. The request should include the payment and interaction data, as well as completion instructions. In __requestSession.php__ We need to define and initiate the payment and interaction data.
 
@@ -115,29 +117,29 @@ $orderId   = uniqid();
 $apiUsername ="apiUsername";
 $merchant ="MerchatId";
 ```
-## 4. Define the interaction.returnUrl.
+## 5. Define the interaction.returnUrl.
 
-The gateway will need the returnUrl to redirect the payer after the checkout session. Possibly, when redirected the payer can be  presented with the payment status or any desired message including a receipt. Hence we must provide the interaction.returnUrl in the Create Checkout Session operation.
+As pre-empted in __step 3__, the gateway will need the __$returnUrl__ to redirect the payer after the checkout session. Possibly, when redirected the payer can be  presented with the payment status or any desired message including a receipt.
 
 ```php
 $returnUrl = "https://returnurl.com";
 ```
-## 5. Generate and define the API Password
+## 6. Your API Password
 
-You should generate the API password in the Merchant Administration Portal. Administrator login credentials will be provided to you by NBM when you are successfully on boarded to the gateway. As an administrator, you should create a new operator with permissions to generate the API password.
-
-Then in the code define and assign the apiPassword as below.
+You should generate the API password in the Merchant Administration Portal. Administrator login credentials are provided to you by NBM when you are successfully on boarded on the gateway as a merchant. As an administrator, you will need to create a new operator with permissions to generate the API password.
 
 ```php
 $apiPassword ="yourMerchantPortalGeneratedApiPassword";
 ```
-## 6.  Define the base url for requesting the checkout session.
+## 7.  The base url for requesting the checkout session.
+
+You will be provided with the base url for the test environment for testing purposes. You will then switch to a production base url.
 
 ```php
 $baseUrl =  "https://nbm.gateway.mastercard.com/api/nvp/version/49";
 
 ```
-Then we need to Initiate a curl with the Create Checkout Session operation. The request should include the payment and the interaction data, as well as the completion instructions. we have already defined the needed parameters as above.
+Then we need to Initiate a curl with the Create Checkout Session operation. The request should include the payment and the interaction data, as well as the completion instructions. we have already defined the needed parameters from __step 4__.
 
 ```php
 $ch = curl_init();
@@ -156,9 +158,10 @@ if(curl_errno($ch)){
 curl_close($ch);
 ```
 
-## 7. Extract the session.id and the success indicator from the curl result.
+## 7. Extracting the session.id and the success indicator from the curl result.
 
-We need to extract the session id from the curl result. A successful response to this operation will contain the session.id and the success Indicator parameters.
+A successful response in __step 7__ will contain the session.id and the success Indicator parameters.
+the result indicator and success indicators
 
 ```php
 $sessionid = explode("=",explode("&",$result)[2])[1];
@@ -167,9 +170,11 @@ $successIndicator = explode("=",explode("&",$result)[5])[1];
 
 You may be wondering why the success Indicator.
 
-The gateway sends the result of the payment in a resultIndicator parameter, which is appended to the return url (interaction.returnUrl) used to return the payer to your shop site. We can determine the success of the payment by comparing the resultIndicator parameter to the successIndicator parameter returned in the Create Checkout Session response.
+The gateway sends the result of the payment in a __resultIndicator__ parameter, via the return url (interaction.returnUrl) used to return the payer to your desired page. There, you can determine the success of the payment by comparing the __resultIndicator__ parameter to the successIndicator parameter returned in the Create Checkout Session response.
 
-A match of the successIndicator and the resultIndicator indicates that the payment has been successful. Depending on you system use case, you can save the value returned in the successIndicator parameter on your shop system to verify the success or failure of the payment. We will use sessions just to demonstrate the point as explained.
+A match of the successIndicator and the resultIndicator shows that the payment was successful. Depending on you system use case, you can then save the value returned in the successIndicator parameter on your system to verify the success or failure of the payment. 
+
+Here We will use sessions just to demonstrate the point as explained.
 
 ```php
 $_SESSION["successIndicator"] = $successIndicator;
@@ -177,7 +182,7 @@ $_SESSION["amount"] = $amount ;
 $_SESSION["currency"] = $currency;
 
 ```
-Then include the below code for the page structure and the payment request form.
+Include the below code for the page structure and the payment request form.
 
 ```php
 <!doctype html>
@@ -216,9 +221,7 @@ Then include the below code for the page structure and the payment request form.
 			<label for="amount">Confirm a payment of <?php echo $currency.$amount;?>. </label>
 			<br>
             <br>
-<!-- 
-A button for starting the payment process.	
--->
+
 			<input type="button" maxlength="5" maxheight="2" class="btn btn-primary btn-lg" value="Pay" onclick="Checkout.showPaymentPage();" />
 			</div>
 			</div>
@@ -226,7 +229,7 @@ A button for starting the payment process.
 </main>
 ```
 
-We need to reference the checkout.js file from the gateway servers. This will place the Checkout object into global scope. In this case we will use version 49 of the checkout.
+Wethen need to reference the __checkout.js__ file from the gateway servers. This will place the Checkout object into global scope. In this case we will use __version 49__ of the checkout.
 
 ```php
  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> 
@@ -267,4 +270,6 @@ We need some JavaScript to finalize the process. we need a call to the Checkout.
  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
 </html>
 ```
-Get access to the API from [National Bank of Malawi ](https://www.natbank.co.mw/) and  more API documentation [here](https://test-nbm.mtf.gateway.mastercard.com/api/documentation/integrationGuidelines/index.html?locale=en_US).
+There we go! we have the simple integration to the payment gateway.
+
+You can get more details on how to access the payment API from [National Bank of Malawi ](https://www.natbank.co.mw/) and  more information on the API [here](https://test-nbm.mtf.gateway.mastercard.com/api/documentation/integrationGuidelines/index.html?locale=en_US).
