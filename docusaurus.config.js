@@ -88,6 +88,11 @@ const config = {
             label: 'Videos', 
             position: 'left'
           },
+          {
+            to: '/docs/malawian-apis', 
+            label: 'Malawian APIs', 
+            position: 'left'
+          },
           // {to: '/blog', label: 'Blog', position: 'left'},
           {
             href: 'https://github.com/geekquest/learn.geekquest.mw',
